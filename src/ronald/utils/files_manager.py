@@ -23,6 +23,7 @@ class FilesManager():
         file_path = Path(self.folder) / file_name
         new_file = FileInfo(str(file_path), mode)
         self.files[file_name] = new_file
+        return new_file.file
 
     def GetFile(self, file_name):
         return self.files[file_name].file
