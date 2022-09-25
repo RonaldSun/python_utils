@@ -12,11 +12,14 @@ from tabulate import tabulate
 
 
 class CSVDataManager:
-    def __init__(self, data_folder):
+    def __init__(self, data_folder, usecols=None):
         self.data_folder = data_folder
         self.data = None
+        self.file_path = None
         self.func_list = None
         self.file_extension = ".csv"
+        self.usecols = usecols
+        self.load_latest_data()
 
     def load_latest_data(self):
         files = [str(x) for x in Path(self.data_folder).glob(
@@ -24,14 +27,19 @@ class CSVDataManager:
         if len(files) > 0:
             files.sort()
             self.latest_file = files[-1]
-            self.data = pd.read_csv(self.latest_file, index_col=0)
-            logger.info("loaded file: " + self.latest_file)
+            self.load_target_data(self.latest_file)
         else:
             logger.warning("target folder is empty!")
 
+    def get_file_date(self):
+        file_name = Path(self.file_path).name
+        file_date = file_name.split(".")[0]
+        return file_date
+
     def load_target_data(self, file_name):
+        self.file_path = file_name
         if Path(file_name).is_file():
-            self.data = pd.read_csv(file_name, index_col=0)
+            self.data = pd.read_csv(file_name, usecols=self.usecols)
             logger.info("loaded file: " + file_name)
 
     def make_copy_of_latest(self):
@@ -60,7 +68,8 @@ class CSVDataManager:
             choose_sentence = choose_sentence + "\n"
             choose_sentence = choose_sentence + (str(i+1) + ". ")
             choose_sentence = choose_sentence + func_name
-        choose_sentence = choose_sentence + "\n4. exist\n"
+        choose_sentence = choose_sentence + \
+            "\n{}. exist\n".format(len(func_list)+1)
         while(True):
             c = input(choose_sentence)
             if int(c) == len(func_list) + 1:
