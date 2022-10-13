@@ -2,7 +2,7 @@
 Author: RonaldSun a297131009@qq.com
 Date: 2022-09-26 15:58:52
 LastEditors: RonaldSun a297131009@qq.com
-LastEditTime: 2022-10-11 21:46:18
+LastEditTime: 2022-10-13 20:22:11
 '''
 from ronald.utils.logger import *
 from datetime import datetime
@@ -79,6 +79,11 @@ class CSVDataManager:
             else:
                 logger.error("error input!")
                 break
+
+    def __del__(self):
+        if Path(self.file_path).exists():
+            Path(self.file_path).unlink()
+        self.data.to_csv(self.file_path)
 
 
 if __name__ == "__main__":
