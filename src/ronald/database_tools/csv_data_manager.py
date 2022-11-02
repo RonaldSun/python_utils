@@ -2,7 +2,7 @@
 Author: RonaldSun a297131009@qq.com
 Date: 2022-09-26 15:58:52
 LastEditors: RonaldSun a297131009@qq.com
-LastEditTime: 2022-10-13 20:22:11
+LastEditTime: 2022-11-02 17:17:49
 '''
 from ronald.utils.logger import *
 from datetime import datetime
@@ -39,7 +39,10 @@ class CSVDataManager:
     def load_target_data(self, file_name):
         self.file_path = file_name
         if Path(file_name).is_file():
-            self.data = pd.read_csv(file_name, usecols=self.usecols)
+            self.data = pd.read_csv(
+                file_name, usecols=self.usecols)
+            self.data = self.data.loc[:, ~
+                                      self.data.columns.str.contains('^Unnamed')]
             logger.info("loaded file: " + file_name)
 
     def make_copy_of_latest(self):
