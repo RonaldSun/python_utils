@@ -84,10 +84,14 @@ class CSVDataManager:
                 break
 
     def __del__(self):
-        if Path(self.file_path).exists():
-            Path(self.file_path).unlink()
-        self.data.to_csv(self.file_path)
-
+        temp_file = str(self.file_path) + '.tmp'
+        try:
+            self.data.to_csv(temp_file)
+            self.data.to_csv(self.file_path)
+        except:
+            logger.error("save file error!")
+        if Path(temp_file).is_file():
+            Path(temp_file).unlink()
 
 if __name__ == "__main__":
     data_folder = "/home/linsu/Nutstore Files/database/invest_data"

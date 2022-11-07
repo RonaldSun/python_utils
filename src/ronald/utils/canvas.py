@@ -1,3 +1,9 @@
+'''
+Author: Jiaming Sun a297131009@qq.com
+Date: 2022-03-18 00:46:04
+LastEditors: Jiaming Sun a297131009@qq.com
+LastEditTime: 2022-11-07 00:57:33
+'''
 import matplotlib.pyplot as plt
 from ronald.utils.common_include import *
 import matplotlib.dates as mdates
@@ -12,6 +18,8 @@ class Canvas():
         self.sharey = sharey
         self.fig, self.axes = plt.subplots(
             self.subplot_N, 1, figsize=(10, 13), sharex=sharex, sharey=sharey)
+        if subplot_N == 1:
+            self.axes = [self.axes]
         self.cmap = plt.get_cmap('viridis')
         self.colors = self.cmap(np.linspace(0, 1, plot_num))
         self.bottom_label = bottom_label
@@ -38,5 +46,8 @@ class Canvas():
             plt.ion()
             plt.ioff()
             plt.show()
-            self.fig.clf()
-            plt.close("all")
+            try:
+                self.fig.clf()
+                plt.close("all")
+            except:
+                pass
