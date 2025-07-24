@@ -10,14 +10,16 @@ import functools
 import time
 
 
-def retry_if_fail(max_retry_times=5, sleep_time=0):
+def retry_if_fail(max_retry_times=5, sleep_time=0, print_trace=True):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             for _ in range(max_retry_times):
                 try:
                     return func(*args, **kw)
-                except:
+                except Exception as e:
+                    if print_trace:
+                        logger.warning(f"An error occurred: {e}")
                     logger.warning("waiting for retry...")
                     sleep(sleep_time)
             return None
