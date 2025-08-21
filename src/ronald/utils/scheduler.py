@@ -8,9 +8,10 @@ from ronald.utils.common_include import *
 from ronald.utils.logger import *
 import functools
 import time
+import random
 
 
-def retry_if_fail(max_retry_times=5, sleep_time=0, print_trace=True):
+def retry_if_fail(max_retry_times=5, sleep_time=0, print_trace=True, random_time=0):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
@@ -21,7 +22,10 @@ def retry_if_fail(max_retry_times=5, sleep_time=0, print_trace=True):
                     if print_trace:
                         logger.warning(f"An error occurred: {e}")
                     logger.warning("waiting for retry...")
-                    sleep(sleep_time)
+                    wait = sleep_time
+                    if random_time > 0:
+                        wait = sleep_time + random.uniform(-random_time, random_time)
+                    sleep(wait)
             return None
         return wrapper
     return decorator
