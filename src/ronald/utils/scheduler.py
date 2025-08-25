@@ -11,7 +11,7 @@ import time
 import random
 
 
-def retry_if_fail(max_retry_times=5, sleep_time=0, print_trace=True, random_time=0):
+def retry_if_fail(max_retry_times=5, sleep_time=0, print_trace=True, random_time=0, skip_str_list=[]):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kw):
@@ -21,6 +21,10 @@ def retry_if_fail(max_retry_times=5, sleep_time=0, print_trace=True, random_time
                 except Exception as e:
                     if print_trace:
                         logger.warning(f"An error occurred: {e}")
+                    for s in skip_str_list:
+                        if s in str(e):
+                            logger.info("skip waiting.")
+                            return None
                     logger.warning("waiting for retry...")
                     wait = sleep_time
                     if random_time > 0:
